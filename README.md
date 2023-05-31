@@ -12,27 +12,70 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Dependencies:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+create-react-app: https://create-react-app.dev/
+hardhat: https://hardhat.org/
+infura: https://infura.io/
+etherscan: https://etherscan.io/
+node: https://nodejs.org/en/download/
+chakra ui: https://chakra-ui.com/docs/getting-st...
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Etherscan deployed contract :
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+https://sepolia.etherscan.io/address/0x70e48577f38dc1f21ab3980ac88b4a7c1fdba769
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Contract address:
 
-## Learn More
+0x70e48577f38dc1F21Ab3980aC88B4A7C1fDBA769
 
-To learn more about Next.js, take a look at the following resources:
+## Commands to deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npx hardhat clean
+npx hardhat deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Important configuration from the hardhat.config.js
 
-## Deploy on Vercel
+```
+require("@nomicfoundation/hardhat-toolbox");
+require("@nomiclabs/hardhat-etherscan");
+const dotenv = require("dotenv");
+dotenv.config();
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+/** @type import('hardhat/config').HardhatUserConfig */
+module.exports = {
+  solidity: "0.8.18",
+  networks: {
+    sepolia: {
+      url: process.env.MY_ALCHEMY_RPC_ENDPOINT,
+      accounts: [process.env.MY_PRIVATE_KEY],
+    },
+  },
+  etherscan: {
+    apiKey: process.env.MY_ETHERSCAN_KEY,
+  },
+};
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+
+## .env file
+
+MY_ALCHEMY_RPC_ENDPOINT= "Go to alchemy and create a new project, you will recieve an API key"
+
+MY_PRIVATE_KEY= "This is the private key of your wallet that is going to deploy the contract"
+
+MY_ETHERSCAN_KEY= "create an account in etherscan and then ask for a private key"
+
+## DO NOT FORGET TO GO TO THE CONTRACT AGAIN AND CHANGE THE ISABLETOMINT to "True"
+
+otherwise the contract will not be allowed to be mint. Remember that this can be done only by the wallet that deployed the contract.
+
+## Command to verify the contract once is already available and deployed on the blockchain:
+
+npx hardhat run scripts/deploy.ts --network sepolia
+
+(google to see what is what you have to install in order for this command to work)
+
+## Constructor function , has to have same parameters as the script function that is going to be used to deploy.
+
+in this case I got an error because my script had 2 parameters and my constructor had 0 parameters. They always have to match.
