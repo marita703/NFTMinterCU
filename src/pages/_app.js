@@ -30,14 +30,17 @@ export default function App({ Component, pageProps }) {
   }
 
   return (
-    <div>
-      <Navbar connectAccount={connectAccount} isConected={isConected} />
-      <MainMint
-        accounts={accounts}
-        setAccounts={setAccounts}
-        isConected={isConected}
-      />
-      <Component {...pageProps} />
+    <div className="overlay">
+      <div className="App">
+        <Navbar connectAccount={connectAccount} isConected={isConected} />
+        <MainMint
+          accounts={accounts}
+          setAccounts={setAccounts}
+          isConected={isConected}
+        />
+        <Component {...pageProps} />
+      </div>
+      <div className="moving-background" />
     </div>
   );
 }
