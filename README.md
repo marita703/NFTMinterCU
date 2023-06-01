@@ -29,10 +29,45 @@ https://sepolia.etherscan.io/address/0x70e48577f38dc1f21ab3980ac88b4a7c1fdba769
 
 0x70e48577f38dc1F21Ab3980aC88B4A7C1fDBA769
 
-## Commands to deploy
+## do not forget to install the dotev package:
 
-npx hardhat clean
-npx hardhat deploy
+npm install -D dotenv
+
+## Create a new deploy file for each of the contracts that you have and change the names of the constanst for:
+
+```
+const hre = require("hardhat");
+
+async function main() {
+  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
+  const unlockTime = currentTimestampInSeconds + 60;
+
+  const lockedAmount = hre.ethers.utils.parseEther("0.001");
+
+  const CryptoUndies = await hre.ethers.getContractFactory("CryptoUndies");
+  const cryptoUndies = await CryptoUndies.deploy();
+
+  await cryptoUndies.deployed();
+
+  console.log(
+    `Lock with ${ethers.utils.formatEther(
+      lockedAmount
+    )}ETH and unlock timestamp ${unlockTime} deployed to ${
+      cryptoUndies.address
+    }`
+  );
+}
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+
+```
+
+Pay attention to the the const with capital letters and the ones underscores change it with the name of your contracts.
 
 ## Important configuration from the hardhat.config.js
 
@@ -58,6 +93,12 @@ module.exports = {
 
 ```
 
+## Commands to deploy
+
+npx hardhat clean
+npx hardhat compile
+npx hardhat run scripts/"name of the deploy file for each contract in the scripts directory"(in this case is "deployCryptoUndies.js") --network "name of the network" (in this case is sepolia)
+
 ## .env file
 
 MY_ALCHEMY_RPC_ENDPOINT= "Go to alchemy and create a new project, you will recieve an API key"
@@ -79,3 +120,17 @@ npx hardhat run scripts/deploy.ts --network sepolia
 ## Constructor function , has to have same parameters as the script function that is going to be used to deploy.
 
 in this case I got an error because my script had 2 parameters and my constructor had 0 parameters. They always have to match.
+
+## The package that we need to install in order to verify the contract in ethrscan, because when we deploy the contract will be in bits and not in human readable code is:
+
+npm i -D @nomiclabs/hardhat-etherscan
+
+now we add this to the hardatconfig package:
+
+require(nomiclabs/hardhat-ether)
+
+## Run the command to verify:
+
+npx hardhat verify --network "name of the network" (in this case the network is sepolia) contract address
+
+npx hardhat verify --network sepolia 0x70e48577f38dc1F21Ab3980aC88B4A7C1fDBA769
